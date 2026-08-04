@@ -64,7 +64,7 @@ export default function LandingAndDashboardPage() {
       <section className="text-center pt-6 space-y-8 max-w-4xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-accent/15 text-violet-300 border border-violet-500/30 text-xs font-semibold">
           <Sparkles className="w-3.5 h-3.5 text-cyan-glow" />
-          <span>Outpilot AI Cold Outreach Architecture — Neon DB + Gmail / Resend API</span>
+          <span>Outpilot AI Cold Outreach Architecture</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-none">

@@ -53,17 +53,7 @@ export const Sidebar = () => {
         </nav>
       </div>
 
-      {/* Footer Info */}
-      <div className="glass-card p-3.5 rounded-xl text-xs space-y-1.5 border border-gray-800">
-        <div className="flex justify-between text-gray-400 text-[11px]">
-          <span>Database Engine:</span>
-          <span className="text-emerald-400 font-semibold font-mono">Neon DB</span>
-        </div>
-        <div className="flex justify-between text-gray-400 text-[11px]">
-          <span>Delivery Modules:</span>
-          <span className="text-cyan-glow font-semibold font-mono">Gmail / Resend</span>
-        </div>
-      </div>
+
     </aside>
   );
 };

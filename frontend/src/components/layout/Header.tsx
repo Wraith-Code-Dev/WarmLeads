@@ -22,21 +22,7 @@ export const Header = () => {
       </div>
 
       <div className="flex items-center gap-4 text-xs">
-        {/* Neon DB Queue Badge */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-obsidian-800/80 border border-gray-700/50">
-          <Database className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-gray-300 font-mono">Neon DB (Dual Engine)</span>
-        </div>
-
-        {/* Gmail / Resend Delivery Status Badge */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-obsidian-800/80 border border-gray-700/50">
-          <Mail className={`w-3.5 h-3.5 ${gmailConnected ? 'text-cyan-glow' : 'text-amber-400'}`} />
-          <span className="text-gray-300 font-mono">
-            {gmailConnected ? 'Gmail API Connected' : 'Gmail / Resend Ready'}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2 pl-2 border-l border-gray-700/50">
+        <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
           <span className="text-gray-400 font-mono text-[11px]">Worker Active</span>
         </div>
