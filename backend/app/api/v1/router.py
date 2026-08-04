@@ -6,10 +6,18 @@ from app.api.v1.analytics import router as analytics_router
 from app.api.v1.onboarding import router as onboarding_router
 from app.api.v1.queue import router as queue_router
 
+from fastapi import Depends
+from app.core.security import get_current_user
+
 router = APIRouter()
-router.include_router(prospects_router)
-router.include_router(review_router)
-router.include_router(auth_router)
-router.include_router(analytics_router)
-router.include_router(onboarding_router)
-router.include_router(queue_router)
+
+# Secured Routes
+secure_deps = [Depends(get_current_user)]
+router.include_router(prospects_router, dependencies=secure_deps)
+router.include_router(review_router, dependencies=secure_deps)
+router.include_router(analytics_router, dependencies=secure_deps)
+router.include_router(onboarding_router, dependencies=secure_deps)
+
+# Unsecured / Custom Security Routes
+router.include_router(auth_router)  # Handles OAuth Callbacks
+router.include_router(queue_router) # Handles Cron Secret

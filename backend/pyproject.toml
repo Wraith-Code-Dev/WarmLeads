@@ -27,6 +27,7 @@ dependencies = [
     "sqlalchemy>=2.0.28",
     "uvicorn[standard]>=0.28.0",
     "aiosqlite>=0.22.1",
+    "pyjwt>=2.13.0",
 ]
 
 [project.scripts]

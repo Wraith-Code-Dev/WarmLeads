@@ -75,7 +75,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <Check className="w-4 h-4 text-cyan-glow shrink-0" />
-            <span>Remove WarmLeads branding</span>
+            <span>Remove Outpilot branding</span>
           </div>
         </div>
 

@@ -50,8 +50,8 @@ export const InstantResearchWidget = () => {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Search Input Bar */}
-      <form onSubmit={handleGenerate} className="glass-panel p-2.5 rounded-2xl flex items-center gap-3 border border-violet-500/30 shadow-violet-glow">
-        <div className="pl-3 text-violet-accent">
+      <form onSubmit={handleGenerate} className="clean-card p-2 rounded-2xl flex items-center gap-3">
+        <div className="pl-3 text-violet-600">
           <Sparkles className="w-5 h-5 animate-pulse" />
         </div>
         <input 
@@ -59,12 +59,12 @@ export const InstantResearchWidget = () => {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="Paste a prospect website or LinkedIn URL (e.g. stripe.com)"
-          className="bg-transparent border-none outline-none text-white placeholder-gray-500 text-sm w-full font-medium"
+          className="bg-transparent border-none outline-none text-black placeholder-gray-500 text-sm w-full font-black shadow-none"
         />
         <button
           type="submit"
           disabled={loading}
-          className="btn-glowing-border py-3 px-6 text-white text-xs font-bold shrink-0 flex items-center gap-2 rounded-xl"
+          className="clean-btn py-3 px-6 text-xs shrink-0 flex items-center gap-2"
         >
           {loading ? (
             <>
@@ -82,41 +82,41 @@ export const InstantResearchWidget = () => {
 
       {/* Loading Skeleton Shimmer State */}
       {loading && (
-        <div className="glass-panel p-6 rounded-2xl space-y-4 border border-gray-800 animate-shimmer">
-          <div className="h-4 bg-obsidian-700 rounded w-1/3"></div>
-          <div className="h-3 bg-obsidian-700 rounded w-3/4"></div>
-          <div className="h-20 bg-obsidian-700 rounded w-full mt-4"></div>
+        <div className="clean-card p-6 rounded-2xl space-y-4 animate-pulse">
+          <div className="h-4 bg-gray-200 border-2 border-black rounded w-1/3"></div>
+          <div className="h-3 bg-gray-200 border-2 border-black rounded w-3/4"></div>
+          <div className="h-20 bg-gray-200 border-2 border-black rounded w-full mt-4"></div>
         </div>
       )}
 
       {/* Output Interactive Pitch Card */}
       {result && !loading && (
-        <div className="glass-panel p-6 rounded-2xl space-y-5 border border-violet-500/40 shadow-violet-glow relative overflow-hidden">
+        <div className="clean-card p-6 rounded-2xl space-y-5 relative overflow-hidden text-left">
           {/* Top Header */}
-          <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+          <div className="flex items-center justify-between border-b-2 border-black pb-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-violet-300 bg-violet-500/20 px-2.5 py-1 rounded-lg border border-violet-500/30">
+              <span className="text-xs font-black text-black bg-emerald-200 px-3 py-1.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                 AI 2-Pass Verified Pitch
               </span>
-              <span className="text-xs text-gray-400 font-mono">
+              <span className="text-xs text-black font-mono font-bold">
                 Scraped in {result.execution_time_seconds}s • {result.confidence_score}% Confidence
               </span>
             </div>
 
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="text-xs text-gray-300 hover:text-white flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gray-800/80 border border-gray-700"
+              className="text-xs text-black flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border-2 border-black font-black transition-all hover:bg-gray-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
             >
-              <Edit3 className="w-3.5 h-3.5 text-cyan-glow" />
+              <Edit3 className="w-3.5 h-3.5" />
               {isEditing ? 'Done Editing' : 'Edit Copy'}
             </button>
           </div>
 
           {/* Scraped Pain Points */}
-          <div className="bg-obsidian-800/60 p-4 rounded-xl space-y-2 text-xs border border-gray-800">
-            <span className="font-bold text-cyan-glow">Target Company Context & Pain Points:</span>
-            <p className="text-gray-300">{result.company_summary}</p>
-            <ul className="list-disc list-inside text-gray-400 space-y-1 pt-1">
+          <div className="bg-violet-100 p-4 rounded-xl space-y-2 text-xs border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+            <span className="font-black text-black">Target Company Context & Pain Points:</span>
+            <p className="text-black font-bold">{result.company_summary}</p>
+            <ul className="list-disc list-inside text-black space-y-1 pt-1 font-bold">
               {result.pain_points?.map((pt: string, i: number) => (
                 <li key={i}>{pt}</li>
               ))}
@@ -124,32 +124,32 @@ export const InstantResearchWidget = () => {
           </div>
 
           {/* Email Card Output */}
-          <div className="space-y-3 bg-obsidian-900/90 p-5 rounded-xl border border-gray-800">
+          <div className="space-y-4 bg-white p-5 rounded-xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <div>
-              <span className="text-xs font-semibold text-gray-400">Subject Line:</span>
+              <span className="text-xs font-black text-black uppercase tracking-wider">Subject Line:</span>
               {isEditing ? (
                 <input
                   type="text"
                   value={editSubject}
                   onChange={(e) => setEditSubject(e.target.value)}
-                  className="w-full mt-1 px-3 py-1.5 rounded-lg bg-obsidian-800 border border-gray-700 text-white text-xs font-semibold outline-none focus:border-violet-accent"
+                  className="w-full mt-2 px-3 py-2 rounded-lg bg-white border-2 border-black text-black text-sm font-black outline-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                 />
               ) : (
-                <div className="text-sm font-bold text-white mt-0.5">{editSubject}</div>
+                <div className="text-sm font-black text-black mt-1">{editSubject}</div>
               )}
             </div>
 
             <div>
-              <span className="text-xs font-semibold text-gray-400">Personalized Body (&lt;120 words):</span>
+              <span className="text-xs font-black text-black uppercase tracking-wider">Personalized Body:</span>
               {isEditing ? (
                 <textarea
                   rows={6}
                   value={editBody}
                   onChange={(e) => setEditBody(e.target.value)}
-                  className="w-full mt-1 p-3 rounded-lg bg-obsidian-800 border border-gray-700 text-white text-xs leading-relaxed outline-none focus:border-violet-accent"
+                  className="w-full mt-2 p-3 rounded-lg bg-white border-2 border-black text-black text-sm font-bold leading-relaxed outline-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                 />
               ) : (
-                <div className="text-xs text-gray-200 leading-relaxed whitespace-pre-line mt-1 bg-obsidian-800/40 p-3 rounded-lg border border-gray-800/60">
+                <div className="text-sm font-bold text-black leading-relaxed whitespace-pre-line mt-2 p-4 rounded-lg bg-gray-50 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                   {editBody}
                 </div>
               )}
@@ -157,24 +157,19 @@ export const InstantResearchWidget = () => {
           </div>
 
           {/* Action Footer & Sub-banner */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-            <div className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3">
+            <div className="flex items-center gap-2 text-xs font-black text-black bg-cyan-200 px-4 py-2 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
               <CheckCircle2 className="w-4 h-4" />
               <span>Ready to dispatch via Neon DB SQL Queue</span>
             </div>
 
             <a
               href="/prospects"
-              className="btn-glowing-border py-2.5 px-6 text-white font-bold text-xs flex items-center gap-2 rounded-xl"
+              className="clean-btn py-2.5 px-6 text-xs flex items-center gap-2"
             >
               <Send className="w-3.5 h-3.5" />
               Approve & Send Demo
             </a>
-          </div>
-
-          {/* Sub-banner */}
-          <div className="text-center pt-2 text-xs text-violet-300 font-medium">
-            ✨ <span className="underline">Sign up in 1 click</span> to send this email for free.
           </div>
         </div>
       )}

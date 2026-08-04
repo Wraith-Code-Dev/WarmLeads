@@ -86,26 +86,23 @@ export default function ProspectsPage() {
   );
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-full w-full px-2 lg:px-4">
       {/* Action Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white">Prospects Ingestion</h1>
-          <p className="text-gray-400 text-sm mt-1">
-            Manage prospects and trigger Firecrawl scraping + LangGraph 2-Pass AI Agent
-          </p>
+          <h1 className="text-3xl font-black text-black">Prospects Ingestion</h1>
         </div>
 
         <div className="flex items-center gap-3">
-          <label className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium border border-gray-700/60 transition">
-            <Upload className="w-4 h-4 text-cyan-400" />
+          <label className="cursor-pointer flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-gray-100 text-black text-sm font-bold border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition">
+            <Upload className="w-4 h-4 text-violet-600" />
             {uploading ? 'Uploading...' : 'Import CSV'}
             <input type="file" accept=".csv" onChange={handleFileUpload} className="hidden" />
           </label>
 
           <button 
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-gradient hover:opacity-90 text-white text-sm font-semibold shadow-glow transition"
+            className="clean-btn flex items-center gap-2 px-4 py-2.5 text-sm"
           >
             <Plus className="w-4 h-4" />
             Add Prospect
@@ -114,70 +111,70 @@ export default function ProspectsPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="glass-panel p-4 rounded-xl flex items-center gap-3">
-        <Search className="w-5 h-5 text-gray-400" />
+      <div className="clean-card p-3 flex items-center gap-3">
+        <Search className="w-5 h-5 text-black ml-2" />
         <input 
           type="text" 
           placeholder="Search by email, name, or company..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="bg-transparent border-none outline-none text-gray-200 placeholder-gray-500 text-sm w-full"
+          className="bg-transparent !border-none !shadow-none focus:!shadow-none focus:!transform-none focus:!border-none !outline-none text-black placeholder-gray-500 text-sm w-full font-bold"
         />
       </div>
 
       {/* Prospects Table */}
-      <div className="glass-panel rounded-2xl overflow-hidden">
-        <table className="w-full text-left text-sm text-gray-300">
-          <thead className="bg-gray-800/80 text-gray-400 text-xs uppercase tracking-wider border-b border-gray-800">
+      <div className="clean-card overflow-hidden !p-0">
+        <table className="w-full text-left text-sm text-black">
+          <thead className="bg-violet-100 text-black text-xs uppercase tracking-wider border-b-2 border-black font-black">
             <tr>
-              <th className="py-3.5 px-6">Prospect</th>
-              <th className="py-3.5 px-6">Company & Title</th>
-              <th className="py-3.5 px-6">Website</th>
-              <th className="py-3.5 px-6">Pipeline Status</th>
-              <th className="py-3.5 px-6 text-right">Created</th>
+              <th className="py-4 px-6 border-r-2 border-black">Prospect</th>
+              <th className="py-4 px-6 border-r-2 border-black">Company & Title</th>
+              <th className="py-4 px-6 border-r-2 border-black">Website</th>
+              <th className="py-4 px-6 border-r-2 border-black">Pipeline Status</th>
+              <th className="py-4 px-6 text-right">Created</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-800/60">
+          <tbody className="divide-y-2 divide-black bg-white">
             {loading ? (
               <tr>
-                <td colSpan={5} className="text-center py-8 text-gray-500">Loading prospects...</td>
+                <td colSpan={5} className="text-center py-8 text-black font-bold">Loading prospects...</td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center py-12 text-gray-500">
+                <td colSpan={5} className="text-center py-12 text-black font-bold">
                   No prospects found. Add a prospect or import CSV to start.
                 </td>
               </tr>
             ) : (
               filtered.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-800/30 transition">
-                  <td className="py-4 px-6 font-medium text-white">
+                <tr key={p.id} className="hover:bg-gray-50 transition">
+                  <td className="py-4 px-6 font-bold text-black border-r-2 border-black">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs border border-indigo-500/30">
+                      <div className="w-8 h-8 rounded-lg bg-violet-200 text-violet-800 flex items-center justify-center font-black text-xs border-2 border-black">
                         {p.first_name?.[0] || p.email[0].toUpperCase()}
                       </div>
                       <div>
-                        <div>{p.first_name ? `${p.first_name} ${p.last_name || ''}` : 'Lead'}</div>
-                        <div className="text-xs text-gray-400 font-mono">{p.email}</div>
+                        <div className="font-black">{p.first_name ? `${p.first_name} ${p.last_name || ''}` : 'Lead'}</div>
+                        <div className="text-xs text-black font-mono font-bold mt-0.5">{p.email}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="py-4 px-6">
-                    <div className="text-gray-200">{p.company || '—'}</div>
-                    <div className="text-xs text-gray-400">{p.title || '—'}</div>
+                  <td className="py-4 px-6 border-r-2 border-black">
+                    <div className="text-black font-black">{p.company || '—'}</div>
+                    <div className="text-xs text-black font-bold mt-0.5">{p.title || '—'}</div>
                   </td>
-                  <td className="py-4 px-6">
+                  <td className="py-4 px-6 border-r-2 border-black">
                     {p.website ? (
-                      <a href={p.website.startsWith('http') ? p.website : `https://${p.website}`} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline flex items-center gap-1 text-xs">
+                      <a href={p.website.startsWith('http') ? p.website : `https://${p.website}`} target="_blank" rel="noreferrer" className="text-violet-700 hover:underline flex items-center gap-1 text-xs font-black">
                         <Globe className="w-3 h-3" />
                         {p.website.replace('https://', '').replace('http://', '')}
                       </a>
                     ) : '—'}
                   </td>
-                  <td className="py-4 px-6">
+                  <td className="py-4 px-6 border-r-2 border-black">
                     <StatusBadge status={p.status} />
                   </td>
-                  <td className="py-4 px-6 text-right text-xs text-gray-500 font-mono">
+                  <td className="py-4 px-6 text-right text-xs text-black font-mono font-bold">
                     {new Date(p.created_at).toLocaleDateString()}
                   </td>
                 </tr>
@@ -189,84 +186,84 @@ export default function ProspectsPage() {
 
       {/* Add Prospect Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="glass-panel w-full max-w-lg p-6 rounded-2xl space-y-5 border border-gray-700">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-              <h3 className="text-lg font-bold text-white">Add New Lead</h3>
-              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-white">✕</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="clean-card w-full max-w-lg p-6 space-y-5">
+            <div className="flex items-center justify-between border-b-2 border-black pb-3">
+              <h3 className="text-xl font-black text-black">Add New Lead</h3>
+              <button onClick={() => setShowAddModal(false)} className="text-black font-black hover:scale-110 transition">✕</button>
             </div>
 
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Email Address *</label>
+                <label className="block text-xs font-black text-black mb-1.5 uppercase tracking-wider">Email Address *</label>
                 <input 
                   type="email" 
                   required
                   placeholder="alex@targetcompany.com" 
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-gray-100 text-sm focus:border-brand-500 outline-none"
+                  className="w-full px-3 py-2.5 font-bold"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">First Name</label>
+                  <label className="block text-xs font-black text-black mb-1.5 uppercase tracking-wider">First Name</label>
                   <input 
                     type="text" 
                     placeholder="Alex" 
                     value={newFirstName}
                     onChange={(e) => setNewFirstName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-gray-100 text-sm focus:border-brand-500 outline-none"
+                    className="w-full px-3 py-2.5 font-bold"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Job Title</label>
+                  <label className="block text-xs font-black text-black mb-1.5 uppercase tracking-wider">Job Title</label>
                   <input 
                     type="text" 
                     placeholder="VP of Growth" 
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-gray-100 text-sm focus:border-brand-500 outline-none"
+                    className="w-full px-3 py-2.5 font-bold"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Company Name</label>
+                  <label className="block text-xs font-black text-black mb-1.5 uppercase tracking-wider">Company Name</label>
                   <input 
                     type="text" 
                     placeholder="Acme Corp" 
                     value={newCompany}
                     onChange={(e) => setNewCompany(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-gray-100 text-sm focus:border-brand-500 outline-none"
+                    className="w-full px-3 py-2.5 font-bold"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Website URL</label>
+                  <label className="block text-xs font-black text-black mb-1.5 uppercase tracking-wider">Website URL</label>
                   <input 
                     type="text" 
                     placeholder="acme.com" 
                     value={newWebsite}
                     onChange={(e) => setNewWebsite(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-gray-100 text-sm focus:border-brand-500 outline-none"
+                    className="w-full px-3 py-2.5 font-bold"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-3">
+              <div className="flex justify-end gap-3 pt-4">
                 <button 
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium"
+                  className="clean-btn-outline px-4 py-2 text-sm"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 rounded-xl bg-brand-gradient text-white text-sm font-semibold shadow-glow hover:opacity-90"
+                  className="clean-btn px-4 py-2 text-sm"
                 >
                   {submitting ? 'Ingesting...' : 'Ingest & Trigger AI'}
                 </button>

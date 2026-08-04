@@ -34,8 +34,7 @@ async def fetch_and_lock_next_queue_job(session: AsyncSession) -> Optional[Dict[
         WHERE q.status = 'QUEUED_FOR_SEND'
           AND (q.scheduled_at IS NULL OR q.scheduled_at <= :now)
         ORDER BY q.scheduled_at ASC
-        LIMIT 1
-        FOR UPDATE OF q SKIP LOCKED;
+        LIMIT 1;
     """)
     
     try:

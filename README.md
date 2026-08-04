@@ -1,121 +1,84 @@
-# WarmLeads AI — Cold Outreach Agent (Free Tier Architecture)
+# WarmLeads Platform ⚡
 
-Minimal Cost Stack utilizing **Neon DB (Serverless PostgreSQL)** for data persistence & native SQL job queueing (`FOR UPDATE SKIP LOCKED`), **Gmail API (Google Cloud OAuth2)** for email dispatch, and **LangChain + LangGraph** for 2-pass AI personalization.
+WarmLeads is an Autonomous Cold Email Agent that handles prospecting, research, and outreach with zero overhead. Built with a modern Next.js frontend and a high-performance FastAPI backend, it leverages Firecrawl for deep web scraping and a LangGraph 2-Pass AI Agent powered by Azure OpenAI to craft hyper-personalized emails.
 
----
+## 🚀 Features
 
-## Architecture Diagram
+- **Autonomous Agent**: 2-pass reasoning for intent extraction and personalized pitch generation.
+- **Deep Research**: Firecrawl scraper digests company websites to understand target audience and pain points.
+- **Stateless Queue Worker**: Uses PostgreSQL `FOR UPDATE SKIP LOCKED` for rock-solid concurrency in email dispatch.
+- **Direct Delivery**: Native Gmail OAuth integration for maximum deliverability.
+- **Secure Authentication**: Fully integrated with Supabase Auth (JWT) and PostgreSQL.
+- **Neubrutalist UI**: A stunning, modern, edge-to-edge interface with micro-animations.
 
-```text
-[ React / Next.js Dashboard ] ──REST API──> [ FastAPI Backend ]
-                                                 │
-                                                 ├──> [ Neon DB Serverless Postgres ]
-                                                 │    ├── prospects & research tables
-                                                 │    └── outreach_queue (SELECT ... FOR UPDATE SKIP LOCKED)
-                                                 │
-                                                 ├──> [ LangGraph AI Engine ]
-                                                 │    ├── Firecrawl Scraper
-                                                 │    └── LiteLLM / LangChain 2-Pass Generator
-                                                 │
-                                                 └──> [ Gmail REST API ]
-                                                      └── Direct OAuth2 Dispatch & Reply Tracking
-```
+## 🛠️ Tech Stack
 
----
+### Frontend
+- **Framework**: [Next.js](https://nextjs.org/) 14 (App Router)
+- **Styling**: TailwindCSS & Vanilla CSS (Neubrutalism aesthetic)
+- **Auth**: `@supabase/supabase-js`
+- **Icons**: Lucide React
 
-## Project File Structure
+### Backend
+- **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.13)
+- **Package Manager**: [uv](https://github.com/astral-sh/uv)
+- **Database ORM**: SQLAlchemy with `asyncpg`
+- **AI Core**: LangChain, LangGraph, LiteLLM (Azure OpenAI)
+- **Security**: PyJWT for Supabase Token verification
 
-```text
-warmleads/
-├── backend/
-│   ├── app/
-│   │   ├── main.py                # FastAPI entry point & startup metadata
-│   │   ├── api/
-│   │   │   ├── router.py          # Central API router v1
-│   │   │   └── v1/
-│   │   │       ├── prospects.py   # Ingestion & CSV upload endpoints
-│   │   │       ├── review.py      # Human Review Queue & approval endpoints
-│   │   │       ├── auth.py        # Gmail OAuth2 connection flow
-│   │   │       └── analytics.py   # Stats & reply rate metrics
-│   │   ├── core/
-│   │   │   ├── config.py          # Pydantic settings & environment vars
-│   │   │   └── database.py        # Async SQLAlchemy engine
-│   │   ├── db/
-│   │   │   ├── models.py          # Database schema (Prospect, Queue, EmailLog, OAuthToken)
-│   │   │   └── queue.py           # Native SQL FOR UPDATE SKIP LOCKED implementation
-│   │   ├── agents/
-│   │   │   ├── graph.py           # LangGraph workflow state machine
-│   │   │   ├── state.py           # Agent state definitions
-│   │   │   ├── prompts.py         # 2-pass prompt templates
-│   │   │   └── nodes/
-│   │   │       ├── research.py    # Firecrawl web context scraper node
-│   │   │       └── email_gen.py   # 2-pass email generator & QA verifier node
-│   │   ├── services/
-│   │   │   ├── gmail_service.py   # Gmail REST API sending & thread reply tracker
-│   │   │   ├── firecrawl_service.py # Firecrawl API integration
-│   │   │   └── scheduler.py       # APScheduler worker & jitter manager
-│   │   └── schemas/               # Pydantic validation schemas
-│   ├── requirements.txt
-│   └── .env.example
-├── frontend/
-│   ├── src/
-│   │   ├── app/                   # Next.js App Router pages
-│   │   │   ├── page.tsx           # Main Dashboard Overview
-│   │   │   ├── prospects/page.tsx # Lead Ingestion & Table
-│   │   │   ├── review/page.tsx    # Human Review Queue UI
-│   │   │   ├── analytics/page.tsx # Reply rate & performance metrics
-│   │   │   ├── settings/page.tsx  # OAuth status & configuration
-│   │   │   └── globals.css        # Glassmorphism & dark theme styles
-│   │   ├── components/            # UI Primitives, Sidebar, Header, Status Badges
-│   │   ├── lib/                   # Axios API client
-│   │   └── types/                 # TypeScript interfaces
-│   ├── package.json
-│   └── tailwind.config.js
-└── README.md
-```
+## ⚙️ Quick Start
 
----
+### 1. Supabase Setup
+You need a Supabase project. Enable Email Auth and get your Postgres connection string.
+Execute the initial SQL tables via your Supabase SQL Editor if they are not auto-generated by SQLAlchemy.
 
-## Setup & Running Locally
-
-### 1. Backend Setup (FastAPI)
+### 2. Backend Setup
+Navigate to the backend directory and configure your environment:
 ```bash
 cd backend
-
-# Create virtual environment
-python -m venv venv
-# Activate virtual environment (Windows):
-venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Copy .env configuration
-cp .env.example .env
-
-# Run FastAPI server
-python -m uvicorn app.main:app --reload --port 8000
 ```
-Backend will start on `http://localhost:8000` with Swagger docs at `http://localhost:8000/docs`.
 
-### 2. Frontend Setup (Next.js)
+Create a `.env` file with the following variables:
+```ini
+POOLED_DB_URL=postgresql://...:6543/postgres
+DIRECT_DB_URL=postgresql://...:5432/postgres
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_JWT_SECRET=your-jwt-secret
+AZURE_OPENAI_API_KEY=...
+AZURE_OPENAI_ENDPOINT=...
+FIRECRAWL_API_KEY=...
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+```
+
+Install dependencies using `uv` and start the server:
+```bash
+uv sync
+uv run uvicorn app.main:app --reload
+```
+*The backend will be live on http://localhost:8000*
+
+### 3. Frontend Setup
+Navigate to the frontend directory:
 ```bash
 cd frontend
+```
 
-# Install npm packages
+Create a `.env.local` file:
+```ini
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+```
+
+Install packages and run the dev server:
+```bash
 npm install
-
-# Run development server
 npm run dev
 ```
-Frontend dashboard will be accessible at `http://localhost:3000`.
+*The frontend will be live on http://localhost:3000*
 
----
-
-## 5-Step Execution Workflow
-
-1. **Ingestion**: Upload prospect CSV or add single lead via Next.js UI or FastAPI endpoint (`/api/v1/prospects`).
-2. **AI Graph Processing**: Firecrawl scrapes company website; LangGraph 2-Pass LiteLLM node generates personalized email & quality score.
-3. **Human Review Queue**: User reviews draft in React UI, tweaks copy if needed, and clicks **Approve**. Status transitions to `QUEUED_FOR_SEND`.
-4. **Postgres Worker (`SKIP LOCKED`)**: FastAPI APScheduler worker locks queued item using SQL ACID transaction `FOR UPDATE SKIP LOCKED`.
-5. **Gmail API Delivery**: Sends email via Google OAuth2 with 2-5 min jitter delay. Polling worker detects prospect replies via Gmail History API.
+## 🔒 Security Architecture
+- All API routes are protected by a FastAPI dependency that cryptographically verifies the Supabase JWT.
+- The Next.js frontend uses an Axios Interceptor to dynamically attach the active user session token to every outbound request.
+- The Queue worker endpoint is secured by a separate cron-secret to allow stateless, server-to-server triggers.

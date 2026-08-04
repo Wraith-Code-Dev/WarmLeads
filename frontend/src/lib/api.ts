@@ -1,7 +1,19 @@
 import axios from 'axios';
 import { Prospect, ReviewQueueItem, AnalyticsOverview, RecentActivityItem } from '@/types';
+import { supabase } from './supabaseClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+
+// Add a request interceptor to inject the Supabase JWT token
+axios.interceptors.request.use(async (config) => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
 
 export const api = {
   // Instant Onboarding Quick-Research Route

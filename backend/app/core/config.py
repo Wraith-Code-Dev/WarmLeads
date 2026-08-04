@@ -8,15 +8,19 @@ class Settings(BaseSettings):
     
     # Dual Neon DB Connection Strings
     # Pooled engine (port 6543) for fast REST API queries
-    POOLED_DB_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:6543/neondb"
+    POOLED_DB_URL: str = "sqlite+aiosqlite:///./warmleads.db"
     # Direct engine (port 5432) for FOR UPDATE SKIP LOCKED queue transaction locks
-    DIRECT_DB_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/neondb"
+    DIRECT_DB_URL: str = "sqlite+aiosqlite:///./warmleads.db"
     
     # Legacy / Fallback DB URL
     DATABASE_URL: Optional[str] = None
     
     # Security & Stateless Cron Verification
     CRON_SECRET: str = "super_secret_cron_token_123"
+    
+    # Supabase Configuration
+    SUPABASE_URL: Optional[str] = None
+    SUPABASE_JWT_SECRET: Optional[str] = None
     
     # Azure OpenAI Configuration
     AZURE_OPENAI_ENDPOINT: Optional[str] = None

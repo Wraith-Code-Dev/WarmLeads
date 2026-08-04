@@ -116,18 +116,18 @@ export default function ReviewQueuePage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 max-w-full w-full px-2 lg:px-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Human-in-the-Loop Review Queue</h1>
-          <p className="text-gray-400 text-sm mt-1">
-            Review side-by-side scraped context & edit AI outreach copy before dispatching to Neon DB Queue
+          <h1 className="text-3xl font-black text-black tracking-tight">Human-in-the-Loop Review Queue</h1>
+          <p className="text-black font-bold text-sm mt-1">
+            Review side-by-side scraped context & edit AI outreach copy before dispatching to the DB Queue
           </p>
         </div>
 
         <button
           onClick={fetchQueue}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 text-gray-200 text-sm font-medium border border-gray-700/60"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-gray-50 text-black text-sm font-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-none transition-all uppercase tracking-wider shrink-0"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh Queue
@@ -135,47 +135,49 @@ export default function ReviewQueuePage() {
       </div>
 
       {loading ? (
-        <div className="glass-panel p-12 text-center text-gray-500 rounded-2xl">
+        <div className="clean-card p-12 text-center text-black font-black uppercase tracking-widest rounded-2xl">
           Loading pending drafts...
         </div>
       ) : items.length === 0 ? (
-        <div className="glass-panel p-16 text-center space-y-3 rounded-2xl border border-gray-800">
-          <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
-          <h3 className="text-xl font-bold text-white">Queue Clear!</h3>
-          <p className="text-gray-400 text-sm max-w-md mx-auto">
-            No pending drafts awaiting review. Ingest more prospects to trigger Firecrawl & AI copy generation.
+        <div className="clean-card p-16 text-center space-y-4 rounded-2xl border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] bg-white">
+          <div className="w-16 h-16 bg-emerald-200 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded-xl flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-8 h-8 text-emerald-800" />
+          </div>
+          <h3 className="text-2xl font-black text-black uppercase tracking-tight">Queue Clear!</h3>
+          <p className="text-black font-bold text-sm max-w-md mx-auto">
+            No pending drafts awaiting review. Ingest more prospects to trigger AI copy generation.
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column: Pending List (4 cols) */}
           <div className="lg:col-span-4 space-y-3">
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-1">
-              Pending Human Review ({items.length})
+            <div className="text-xs font-black text-black uppercase tracking-wider px-1 mb-3">
+              Pending Review ({items.length})
             </div>
 
-            <div className="space-y-2 max-h-[calc(100vh-250px)] overflow-y-auto pr-1">
+            <div className="space-y-3 max-h-[calc(100vh-250px)] overflow-y-auto pr-1 pb-4">
               {items.map((item) => {
                 const isSelected = activeItem?.prospect_id === item.prospect_id;
                 return (
                   <div
                     key={item.prospect_id}
                     onClick={() => selectItem(item)}
-                    className={`p-4 rounded-xl cursor-pointer transition border ${
+                    className={`p-4 rounded-xl cursor-pointer transition-all border-2 border-black ${
                       isSelected
-                        ? 'bg-violet-accent/20 border-violet-accent/60 shadow-violet-glow'
-                        : 'glass-card border-gray-800 hover:border-gray-700'
+                        ? 'bg-violet-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] translate-x-1'
+                        : 'bg-white hover:bg-gray-50 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-sm text-white">{item.first_name || 'Prospect'}</span>
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono border border-emerald-500/30">
+                      <span className="font-black text-sm text-black">{item.first_name || 'Prospect'}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 font-black border-2 border-black uppercase">
                         {item.confidence_score}% Match
                       </span>
                     </div>
-                    <p className="text-xs text-gray-400 font-mono mt-0.5">{item.email}</p>
-                    <p className="text-xs text-gray-300 font-semibold mt-2 line-clamp-1">
-                      Subject: {item.subject}
+                    <p className="text-xs text-gray-600 font-bold mt-1">{item.email}</p>
+                    <p className="text-xs text-black font-semibold mt-2 line-clamp-1">
+                      Subj: {item.subject}
                     </p>
                   </div>
                 );
@@ -187,102 +189,104 @@ export default function ReviewQueuePage() {
           {activeItem && (
             <div className="lg:col-span-8 space-y-6">
               {/* Top Context Box */}
-              <div className="glass-panel p-5 rounded-2xl space-y-3 border border-gray-800">
-                <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+              <div className="bg-white p-5 rounded-2xl space-y-4 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="flex items-center justify-between border-b-2 border-black pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-violet-cyan-gradient flex items-center justify-center font-bold text-white text-sm">
+                    <div className="w-12 h-12 rounded-xl bg-violet-200 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center font-black text-violet-900 text-lg">
                       {activeItem.first_name?.[0] || activeItem.email[0].toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="font-bold text-white text-base">{activeItem.first_name || 'Prospect'} ({activeItem.title || 'Decision Maker'})</h3>
-                      <p className="text-xs text-gray-400 font-mono">{activeItem.email} • {activeItem.company}</p>
+                      <h3 className="font-black text-black text-lg leading-tight">{activeItem.first_name || 'Prospect'} ({activeItem.title || 'Decision Maker'})</h3>
+                      <p className="text-xs text-gray-600 font-bold mt-0.5">{activeItem.email} • {activeItem.company}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs text-cyan-glow bg-cyan-500/10 px-3 py-1.5 rounded-lg border border-cyan-500/20">
-                    <Sparkles className="w-4 h-4" />
-                    <span>azure/gpt-4o Draft</span>
+                  <div className="flex items-center gap-2 text-[10px] font-black text-cyan-900 bg-cyan-200 px-3 py-1.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>AI Draft</span>
                   </div>
                 </div>
 
                 {activeItem.company_summary && (
-                  <div className="text-xs text-gray-300 bg-obsidian-800/80 p-3 rounded-xl border border-gray-800">
-                    <span className="font-bold text-violet-300">Scraped Company Context & Pain Points: </span>
-                    {activeItem.company_summary}
+                  <div className="text-xs text-black bg-yellow-50 p-4 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <span className="font-black text-black uppercase tracking-wider block mb-1">Scraped Context & Pain Points: </span>
+                    <span className="font-medium leading-relaxed">{activeItem.company_summary}</span>
                   </div>
                 )}
               </div>
 
               {/* Email Copy Editor Box */}
-              <div className="glass-panel p-6 rounded-2xl space-y-4 border border-violet-500/30">
-                <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-                  <h3 className="font-bold text-white text-base flex items-center gap-2">
-                    <Edit3 className="w-4 h-4 text-violet-400" />
-                    Personalized Cold Email Draft
+              <div className="bg-white p-6 rounded-2xl space-y-5 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-2 h-full bg-violet-600 border-r-2 border-black" />
+                
+                <div className="flex items-center justify-between border-b-2 border-black pb-4 pl-4">
+                  <h3 className="font-black text-black text-lg flex items-center gap-2 uppercase tracking-tight">
+                    <Edit3 className="w-5 h-5 text-violet-600" />
+                    Email Editor
                   </h3>
 
                   <button
                     onClick={handleSaveDraft}
                     disabled={saving}
-                    className="text-xs text-gray-300 hover:text-white px-3 py-1.5 rounded-lg bg-obsidian-800 border border-gray-700"
+                    className="text-[10px] font-black text-black hover:bg-gray-100 px-3 py-1.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] uppercase tracking-wider active:translate-y-[2px] active:shadow-none transition-all"
                   >
                     {saving ? 'Saving...' : 'Save Edits'}
                   </button>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-5 pl-4">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-400 mb-1">Subject Line</label>
+                    <label className="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Subject Line</label>
                     <input 
                       type="text" 
                       value={editSubject}
                       onChange={(e) => setEditSubject(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl bg-obsidian-800 border border-gray-700 text-white text-sm focus:border-violet-accent outline-none font-medium"
+                      className="w-full px-4 py-3 rounded-xl bg-white border-2 border-black text-black text-sm font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:bg-violet-50 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-gray-400 mb-1">Email Body (&lt;120 words)</label>
+                    <label className="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Email Body</label>
                     <textarea 
                       rows={8}
                       value={editBody}
                       onChange={(e) => setEditBody(e.target.value)}
-                      className="w-full p-4 rounded-xl bg-obsidian-800 border border-gray-700 text-white text-sm focus:border-violet-accent outline-none font-sans leading-relaxed"
+                      className="w-full p-4 rounded-xl bg-white border-2 border-black text-black text-sm font-medium leading-relaxed shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:bg-violet-50 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all resize-y"
                     />
                   </div>
                 </div>
 
-                {/* Scheduling Timestamp & Action Buttons */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-800">
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <Calendar className="w-4 h-4 text-violet-400" />
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-5 border-t-2 border-black pl-4">
+                  <div className="flex items-center gap-2 text-[10px] font-black text-black uppercase tracking-wider bg-gray-100 px-3 py-1.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <Calendar className="w-3.5 h-3.5" />
                     <span>Send Window: Tue–Thu, 08:00–11:00 UTC</span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <button
                       onClick={handleReject}
-                      className="px-3 py-2.5 rounded-xl bg-gray-800 hover:bg-red-500/20 text-gray-300 hover:text-red-400 text-xs font-medium border border-gray-700 flex items-center gap-1.5"
+                      className="px-4 py-2.5 rounded-xl bg-red-200 hover:bg-red-300 text-red-900 text-xs font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                       Reject
                     </button>
 
                     <button
                       onClick={handleRegenerate}
                       disabled={regenerating}
-                      className="px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-cyan-glow text-xs font-semibold border border-cyan-500/30 flex items-center gap-1.5"
+                      className="px-4 py-2.5 rounded-xl bg-cyan-200 hover:bg-cyan-300 text-cyan-900 text-xs font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2"
                     >
-                      <RefreshCw className={`w-3.5 h-3.5 ${regenerating ? 'animate-spin' : ''}`} />
-                      {regenerating ? 'Regenerating...' : 'Regenerate with AI'}
+                      <RefreshCw className={`w-4 h-4 ${regenerating ? 'animate-spin' : ''}`} />
+                      {regenerating ? 'Regenerating...' : 'Regenerate'}
                     </button>
 
                     <button
                       onClick={handleApprove}
                       disabled={approving}
-                      className="btn-glowing-border py-2.5 px-6 text-white font-bold text-xs flex items-center gap-2 rounded-xl shadow-violet-glow"
+                      className="px-6 py-2.5 rounded-xl bg-black hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider border-2 border-black shadow-[4px_4px_0px_0px_rgba(139,92,246,1)] active:translate-y-[2px] active:shadow-none transition-all flex items-center gap-2"
                     >
-                      <Send className="w-3.5 h-3.5" />
+                      <Send className="w-4 h-4" />
                       {approving ? 'Queuing...' : 'Approve & Queue'}
                     </button>
                   </div>
