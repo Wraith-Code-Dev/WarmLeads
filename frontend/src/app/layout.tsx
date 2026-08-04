@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
+import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'WarmLeads AI — Free Tier Cold Outreach Architecture',
@@ -16,11 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="bg-dark-900 text-gray-100 min-h-screen antialiased">
-        <Sidebar />
-        <Header />
-        <main className="ml-64 pt-16 p-8 min-h-screen">
-          {children}
-        </main>
+        <AuthProvider>
+          <Sidebar />
+          <Header />
+          <main className="ml-64 pt-16 p-8 min-h-screen">
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );

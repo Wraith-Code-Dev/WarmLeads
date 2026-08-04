@@ -8,7 +8,8 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { label: 'Dashboard', icon: LayoutDashboard, href: '/' },
+    { label: 'Home', icon: Sparkles, href: '/' },
+    { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
     { label: 'Human Review', icon: CheckSquare, href: '/review' },
     { label: 'Prospects', icon: Users, href: '/prospects' },
     { label: 'Pricing Plans', icon: Tag, href: '/#pricing' },
@@ -25,8 +26,8 @@ export const Sidebar = () => {
             <Zap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-black text-white tracking-tight">Outpilot</h1>
-            <p className="text-[11px] text-cyan-glow font-mono font-medium">AI Outreach Agent</p>
+            <h1 className="text-lg font-black text-white tracking-tight">WarmLeads</h1>
+            <p className="text-[11px] text-cyan-glow font-mono font-medium font-bold">AI Outreach Agent</p>
           </div>
         </div>
 

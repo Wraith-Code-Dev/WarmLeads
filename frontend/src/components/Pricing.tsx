@@ -12,7 +12,7 @@ export const Pricing: React.FC<PricingProps> = ({ onSelectPlan }) => {
   const plans = [
     {
       name: "Free Tier",
-      subtitle: "Experience Outpilot",
+      subtitle: "Experience WarmLeads",
       priceMonthly: "₹0",
       priceAnnual: "₹0",
       period: "/ month",
@@ -25,7 +25,7 @@ export const Pricing: React.FC<PricingProps> = ({ onSelectPlan }) => {
         "15 prospect research credits",
         "1 follow-up sequence",
         "Basic open/reply tracking",
-        "Outpilot email branding"
+        "WarmLeads email branding"
       ]
     },
     {
@@ -45,7 +45,7 @@ export const Pricing: React.FC<PricingProps> = ({ onSelectPlan }) => {
         "Custom sending domain (Resend API)",
         "Full analytics dashboard",
         "Priority email support",
-        "No Outpilot branding"
+        "No WarmLeads branding"
       ]
     },
     {
