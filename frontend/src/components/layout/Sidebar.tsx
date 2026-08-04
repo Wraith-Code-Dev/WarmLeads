@@ -16,7 +16,7 @@ export const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 h-screen fixed left-0 top-0 z-30 flex flex-col justify-between bg-white border-r-2 border-black">
+    <aside className="w-64 fixed left-0 top-0 bottom-0 z-30 flex flex-col justify-between bg-white border-r-2 border-black">
       <div>
         {/* Brand Logo */}
         <div className="flex items-center gap-3 px-5 py-6 mb-2">
