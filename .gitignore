@@ -1,0 +1,46 @@
+# Python & Virtual Env
+venv/
+.venv/
+env/
+.env
+*.env
+!.env.example
+backend/.env
+frontend/.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.eggs/
+
+# Node.js & Next.js / React
+node_modules/
+.next/
+dist/
+build/
+out/
+.npm
+*.tsbuildinfo
+next-env.d.ts
+
+# IDEs & OS Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs & Environment
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+tmp/
+*.tmp
