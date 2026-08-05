@@ -18,8 +18,8 @@ export const Sidebar = () => {
   return (
     <aside className="w-64 fixed left-0 top-0 bottom-0 z-30 flex flex-col justify-between bg-white border-r-2 border-black">
       <div>
-        {/* Brand Logo */}
-        <div className="flex items-center gap-3 px-5 py-6 mb-2">
+        {/* Brand Logo - Clicking takes user back to Home Page */}
+        <Link href="/" className="flex items-center gap-3 px-5 py-6 mb-2 hover:opacity-80 transition-opacity cursor-pointer">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-violet-600 text-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
             <Zap className="w-5 h-5 fill-white" />
           </div>
@@ -27,7 +27,7 @@ export const Sidebar = () => {
             <h1 className="text-xl font-black text-black tracking-tight leading-none">WarmLeads</h1>
             <p className="text-[10px] font-black mt-1 text-violet-600 uppercase tracking-widest">AI OUTREACH</p>
           </div>
-        </div>
+        </Link>
 
         {/* Navigation */}
         <nav className="px-3 space-y-2 mt-2">
