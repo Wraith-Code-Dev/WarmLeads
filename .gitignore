@@ -3,12 +3,11 @@ venv/
 .venv/
 env/
 .env
+.env.local
 *.env
 !.env.example
 backend/.env
 frontend/.env
-frontend/.env.local
-.env.local
 __pycache__/
 *.pyc
 *.pyo

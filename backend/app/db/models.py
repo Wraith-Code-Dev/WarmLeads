@@ -135,3 +135,20 @@ class OAuthToken(Base):
     scopes = Column(Text, nullable=True)
     
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+class JobPosting(Base):
+    __tablename__ = "job_postings"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    platform = Column(String(50), nullable=False, index=True)
+    source_id = Column(String(255), nullable=True)
+    source_url = Column(Text, nullable=False)
+    title = Column(String(500), nullable=False)
+    description = Column(Text, nullable=True)
+    budget_min = Column(Integer, nullable=True) # Assuming integer for simplicity or numeric
+    budget_max = Column(Integer, nullable=True)
+    currency = Column(String(10), nullable=True)
+    posted_at = Column(DateTime(timezone=True), nullable=True)
+    ingested_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    dedup_hash = Column(String(64), unique=True, nullable=False, index=True)
+    status = Column(String(50), default="active", index=True)
