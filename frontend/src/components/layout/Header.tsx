@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Mail, Zap } from 'lucide-react';
 import { api } from '@/lib/api';
 
@@ -15,9 +16,11 @@ export const Header = () => {
   return (
     <header className="h-16 ml-64 fixed top-0 right-0 left-0 z-20 flex items-center justify-between px-8 bg-white border-b-2 border-black">
       <div className="flex items-center gap-4">
-        <h2 className="text-sm font-black text-black tracking-widest uppercase">
-          WarmLeads Control
-        </h2>
+        <Link href="/" className="hover:opacity-75 transition-opacity">
+          <h2 className="text-sm font-black text-black tracking-widest uppercase">
+            WarmLeads Control
+          </h2>
+        </Link>
         <span className="text-[10px] px-2 py-1 rounded-md font-mono font-bold bg-violet-100 text-violet-700 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
           Stateless SKIP LOCKED Engine
         </span>

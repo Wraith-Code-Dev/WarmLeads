@@ -2,9 +2,14 @@
 import { ArrowRight, Zap, Target, RefreshCw, Cpu, Play, Sparkles, Activity, CheckCircle, Bell, Mail, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { Pricing } from "@/components/Pricing";
+import { useRouter } from "next/navigation";
+
 
 export default function LandingPage() {
+    const router = useRouter();
     const [showDemo, setShowDemo] = useState(false);
+
 
     const features = [
         {
@@ -319,6 +324,11 @@ export default function LandingPage() {
                     </div>
                 </div>
             </section>
+
+            {/* ───── PRICING ───── */}
+            <div className="bg-[#f5f5f4] py-12 border-t border-gray-200">
+                <Pricing onSelectPlan={() => router.push('/signin')} />
+            </div>
 
             {/* ───── CTA ───── */}
             <section className="py-24 bg-white relative overflow-hidden border-t border-gray-100">
