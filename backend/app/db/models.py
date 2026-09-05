@@ -145,6 +145,7 @@ class JobPosting(Base):
     source_url = Column(Text, nullable=False)
     title = Column(String(500), nullable=False)
     description = Column(Text, nullable=True)
+    budget_type = Column(String(50), nullable=True, default="unspecified")
     budget_min = Column(Integer, nullable=True) # Assuming integer for simplicity or numeric
     budget_max = Column(Integer, nullable=True)
     currency = Column(String(10), nullable=True)
