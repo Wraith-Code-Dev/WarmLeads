@@ -78,7 +78,7 @@ export default function SignInPage() {
                         {/* Email Input */}
                         <div className="space-y-3">
                             <label className="block text-[10px] font-black uppercase tracking-[0.4em] text-gray-600">
-                                // IDENTITY_URI
+                                {'// IDENTITY_URI'}
                             </label>
                             <div className="relative">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -98,7 +98,7 @@ export default function SignInPage() {
                         {/* Password Input */}
                         <div className="space-y-3">
                             <label className="block text-[10px] font-black uppercase tracking-[0.4em] text-gray-600">
-                                // CRYPTOGRAPHIC_KEY
+                                {'// CRYPTOGRAPHIC_KEY'}
                             </label>
                             <div className="relative">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />

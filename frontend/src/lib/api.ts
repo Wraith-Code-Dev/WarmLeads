@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Prospect, ReviewQueueItem, AnalyticsOverview, RecentActivityItem } from '@/types';
+import { Prospect, ReviewQueueItem, AnalyticsOverview, RecentActivityItem, Job } from '@/types';
 import { supabase } from './supabaseClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
@@ -104,5 +104,29 @@ export const api = {
         message: "Backend offline. Simulation engine enabled."
       };
     }
+  },
+
+  // Opportunities & Scraping Engine
+  getJobs: async (platform?: string, limit: number = 50): Promise<Job[]> => {
+    const params: Record<string, any> = { limit };
+    if (platform && platform.toLowerCase() !== 'all') {
+      params.platform = platform.toLowerCase();
+    }
+    const res = await axios.get(`${API_BASE}/jobs`, { params });
+    return res.data;
+  },
+
+  syncJobs: async (keywords?: string[]) => {
+    const res = await axios.post(`${API_BASE}/jobs/sync`, null, {
+      params: keywords && keywords.length > 0 ? { keywords } : undefined
+    });
+    return res.data;
+  },
+
+  getJobDraft: async (sourceUrl: string): Promise<{ draft: string }> => {
+    const res = await axios.get(`${API_BASE}/jobs/draft`, {
+      params: { url: sourceUrl }
+    });
+    return res.data;
   }
 };

@@ -55,7 +55,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 
             <h3 className="text-2xl font-extrabold text-white">Free Tier Limit Reached</h3>
             <p className="text-sm text-gray-300">
-              You've used all 50 monthly emails or 15 research credits on the Free plan.
+              You&apos;ve used all 50 monthly emails or 15 research credits on the Free plan.
             </p>
             <div className="bg-obsidian-800/80 p-3 rounded-xl text-xs text-gray-300 border border-gray-800">
               Unlock <span className="font-bold text-cyan-glow">300 monthly emails</span>, unlimited scraping, and Resend custom domain sending on the Starter Tier.

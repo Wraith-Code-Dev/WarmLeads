@@ -1,92 +1,161 @@
-"use client";
-
+'use client';
 import React, { useEffect, useState } from 'react';
 import { JobCard } from '@/components/jobs/JobCard';
-import { Loader2, Zap } from 'lucide-react';
+import { Loader2, Zap, RefreshCw, Filter, Search, Briefcase } from 'lucide-react';
+import { Job } from '@/types';
+import { api } from '@/lib/api';
 
-// Fallback interface, ideally imported from a types file
-interface Job {
-  id: string;
-  platform: string;
-  source_url: string;
-  title: string;
-  description: string;
-  budget_min: number | null;
-  budget_max: number | null;
-  currency: string | null;
-  posted_at: string | null;
-}
+const PLATFORMS = ['All', 'Upwork', 'Freelancer', 'Reddit', 'Indeed', 'LinkedIn', 'Behance', 'Guru'];
 
 export default function JobsDashboard() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchJobs() {
-      try {
-        // Adjust the base URL to match your FastAPI backend
-        const res = await fetch('http://localhost:8000/api/v1/jobs');
-        if (!res.ok) throw new Error('Failed to fetch jobs');
-        const data = await res.json();
-        setJobs(data);
-      } catch (err: any) {
-        setError(err.message || 'An unknown error occurred.');
-      } finally {
-        setLoading(false);
-      }
+  const fetchJobs = React.useCallback(async (platform: string = selectedPlatform) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.getJobs(platform);
+      setJobs(data);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || err.message || 'Failed to load opportunities');
+    } finally {
+      setLoading(false);
     }
-    
-    fetchJobs();
-  }, []);
+  }, [selectedPlatform]);
+
+  useEffect(() => {
+    fetchJobs(selectedPlatform);
+  }, [fetchJobs, selectedPlatform]);
+
+  const handleSync = async () => {
+    setSyncing(true);
+    try {
+      await api.syncJobs();
+      await fetchJobs(selectedPlatform);
+    } catch (err: any) {
+      alert('Ingestion triggered in background.');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  const filteredJobs = jobs.filter((job) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      job.title.toLowerCase().includes(q) ||
+      (job.description && job.description.toLowerCase().includes(q)) ||
+      job.platform.toLowerCase().includes(q)
+    );
+  });
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50 font-sans selection:bg-blue-500/30">
-      {/* Decorative background blur */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none -z-10"></div>
-      
-      <main className="max-w-7xl mx-auto px-6 py-16">
-        <header className="mb-16 flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 flex items-center">
-              <Zap className="w-10 h-10 mr-4 text-blue-500" />
-              Opportunity Stream
-            </h1>
-            <p className="text-zinc-400 text-lg max-w-2xl">
-              Aggregated freelance listings from Upwork, Freelancer, and Reddit, deduplicated and normalized for AI drafting.
-            </p>
+    <div className="space-y-8 max-w-full w-full px-2 lg:px-4 pb-16">
+      {/* Header Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 bg-white border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-violet-600 text-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
+              <Briefcase className="w-5 h-5 fill-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-black tracking-tight leading-none">
+                Opportunity Stream
+              </h1>
+              <p className="text-xs font-bold text-gray-500 mt-1">
+                Multi-platform freelance & remote listings normalized for one-click proposal generation
+              </p>
+            </div>
           </div>
-          <div className="hidden md:flex items-center space-x-2 text-sm text-zinc-500 font-medium">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-            </span>
-            <span>Live Ingestion Active</span>
-          </div>
-        </header>
+        </div>
 
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-32">
-            <Loader2 className="w-12 h-12 text-blue-500 animate-spin mb-4" />
-            <p className="text-zinc-400 animate-pulse">Synchronizing Data Lake...</p>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-none transition-all disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
+            {syncing ? 'Ingesting Feeds...' : 'Sync Feeds Now'}
+          </button>
+          <button
+            onClick={() => fetchJobs(selectedPlatform)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-gray-50 text-black text-xs font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-none transition-all"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      {/* Filter Chips & Search Bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Platform Chips */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+          {PLATFORMS.map((platform) => {
+            const isSelected = selectedPlatform.toLowerCase() === platform.toLowerCase();
+            return (
+              <button
+                key={platform}
+                onClick={() => setSelectedPlatform(platform)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider border-2 border-black transition-all shrink-0 ${
+                  isSelected
+                    ? 'bg-black text-white shadow-[2px_2px_0px_0px_rgba(139,92,246,1)]'
+                    : 'bg-white text-black hover:bg-gray-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
+                }`}
+              >
+                {platform}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Keyword Search */}
+        <div className="relative w-full md:w-72">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search listings..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-white border-2 border-black rounded-lg text-xs font-bold text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:shadow-[3px_3px_0px_0px_rgba(139,92,246,1)] transition-all"
+          />
+        </div>
+      </div>
+
+      {/* Jobs Grid / States */}
+      {loading ? (
+        <div className="p-16 bg-white border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center">
+          <Loader2 className="w-8 h-8 text-violet-600 animate-spin mx-auto mb-3" />
+          <p className="text-xs font-black uppercase tracking-wider text-black">Synchronizing Opportunities Lake...</p>
+        </div>
+      ) : error ? (
+        <div className="p-6 bg-red-100 border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-red-900">
+          <h3 className="text-sm font-black uppercase tracking-wider mb-1">Error Loading Opportunities</h3>
+          <p className="text-xs font-bold">{error}</p>
+        </div>
+      ) : filteredJobs.length === 0 ? (
+        <div className="p-16 bg-white border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center space-y-3">
+          <div className="w-12 h-12 bg-gray-100 border-2 border-black rounded-xl mx-auto flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+            <Briefcase className="w-6 h-6 text-gray-400" />
           </div>
-        ) : error ? (
-          <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400">
-            <h3 className="font-semibold mb-2">Error Loading Jobs</h3>
-            <p>{error}</p>
-          </div>
-        ) : jobs.length === 0 ? (
-          <div className="text-center py-32">
-            <p className="text-zinc-400 text-lg">No jobs found in the queue.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {jobs.map(job => (
-              <JobCard key={job.id} job={job} />
-            ))}
-          </div>
-        )}
-      </main>
+          <h3 className="text-lg font-black text-black uppercase tracking-tight">No Listings Found</h3>
+          <p className="text-xs font-bold text-gray-500 max-w-sm mx-auto">
+            {searchQuery ? `No jobs match "${searchQuery}".` : 'No opportunities in this category yet. Click "Sync Feeds Now" above.'}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredJobs.map((job) => (
+            <JobCard key={job.id} job={job} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

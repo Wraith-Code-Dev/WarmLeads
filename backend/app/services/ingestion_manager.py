@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import select, text
 
-from app.db.session import pooled_engine
+from app.db.session import AsyncPooledSessionLocal
 from app.db.models import JobPosting
 from app.services.scrapers import (
     FreelancerScraper,
@@ -55,7 +55,7 @@ async def save_normalized_jobs(normalized_jobs: List[Dict[str, Any]]) -> int:
     unique_jobs = list(unique_map.values())
     saved_count = 0
 
-    async with AsyncSession(pooled_engine) as session:
+    async with AsyncPooledSessionLocal() as session:
         for job_item in unique_jobs:
             try:
                 # Query DB to check if hash already exists

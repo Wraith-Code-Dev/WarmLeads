@@ -5,7 +5,7 @@ from sqlalchemy import select
 from datetime import datetime, timezone, timedelta
 import httpx
 
-from app.core.database import get_db
+from app.db.session import get_pooled_db as get_db
 from app.db.models import OAuthToken
 from app.core.config import settings
 

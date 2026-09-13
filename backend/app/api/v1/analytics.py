@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 from typing import List
 
-from app.core.database import get_db
+from app.db.session import get_pooled_db as get_db
 from app.db.models import Prospect, ProspectStatus, OutreachQueue, EmailLog
 from app.schemas.analytics import AnalyticsOverview, RecentActivityItem
 

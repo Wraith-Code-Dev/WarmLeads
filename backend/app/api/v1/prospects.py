@@ -128,8 +128,8 @@ async def bulk_create_prospects(
 
 @router.post("/upload-csv")
 async def upload_csv_prospects(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
-    background_tasks: BackgroundTasks = BackgroundTasks(),
     db: AsyncSession = Depends(get_pooled_db)
 ):
     content = await file.read()

@@ -22,7 +22,7 @@ export default function ReviewQueuePage() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalType>('LIMIT_REACHED');
 
-  const fetchQueue = async () => {
+  const fetchQueue = React.useCallback(async () => {
     setLoading(true);
     try {
       const data = await api.getReviewQueue();
@@ -35,11 +35,11 @@ export default function ReviewQueuePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeItem]);
 
   useEffect(() => {
     fetchQueue();
-  }, []);
+  }, [fetchQueue]);
 
   const selectItem = (item: ReviewQueueItem) => {
     setActiveItem(item);

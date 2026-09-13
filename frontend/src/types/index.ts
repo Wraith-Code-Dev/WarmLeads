@@ -1,3 +1,16 @@
+export interface Job {
+  id: string;
+  platform: string;
+  source_url: string;
+  title: string;
+  description: string;
+  budget_min: number | null;
+  budget_max: number | null;
+  currency: string | null;
+  posted_at: string | null;
+  status?: string;
+}
+
 export interface Prospect {
   id: string;
   email: string;

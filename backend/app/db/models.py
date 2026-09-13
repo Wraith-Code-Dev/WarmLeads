@@ -55,9 +55,9 @@ class Prospect(Base):
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # Relationships
-    research = relationship("ResearchContext", back_populates="prospect", uselist=False, cascade="all, delete-orphan")
-    queue_item = relationship("OutreachQueue", back_populates="prospect", uselist=False, cascade="all, delete-orphan")
-    email_logs = relationship("EmailLog", back_populates="prospect", cascade="all, delete-orphan")
+    research = relationship("ResearchContext", back_populates="prospect", uselist=False, cascade="all, delete-orphan", lazy="selectin")
+    queue_item = relationship("OutreachQueue", back_populates="prospect", uselist=False, cascade="all, delete-orphan", lazy="selectin")
+    email_logs = relationship("EmailLog", back_populates="prospect", cascade="all, delete-orphan", lazy="selectin")
 
 
 class ResearchContext(Base):

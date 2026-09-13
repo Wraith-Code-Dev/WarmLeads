@@ -54,23 +54,42 @@ async def trigger_stateless_queue_worker(
         logger.info("Outside allowed sending window (Tue-Thu 08:00-11:00 UTC). Skipping batch execution.")
         return {"status": "outside_sending_window", "processed_count": 0}
 
-    # 2. Fetch up to 10 pending jobs using DIRECT_DB_URL & FOR UPDATE SKIP LOCKED
-    fetch_query = text("""
-        SELECT 
-            q.id as queue_id,
-            q.prospect_id,
-            q.email_draft,
-            q.subject,
-            q.body,
-            q.sender_oauth_token,
-            q.retry_count
-        FROM outreach_queue q
-        WHERE q.status = 'QUEUED_FOR_SEND'
-          AND (q.scheduled_at IS NULL OR q.scheduled_at <= :now)
-        ORDER BY q.scheduled_at ASC
-        LIMIT 10
-        FOR UPDATE OF q SKIP LOCKED;
-    """)
+    # 2. Fetch up to 10 pending jobs (PostgreSQL uses FOR UPDATE SKIP LOCKED; SQLite uses standard query)
+    is_sqlite = db.bind.dialect.name == "sqlite" if db.bind else False
+    
+    if is_sqlite:
+        fetch_query = text("""
+            SELECT 
+                q.id as queue_id,
+                q.prospect_id,
+                q.email_draft,
+                q.subject,
+                q.body,
+                q.sender_oauth_token,
+                q.retry_count
+            FROM outreach_queue q
+            WHERE q.status = 'QUEUED_FOR_SEND'
+              AND (q.scheduled_at IS NULL OR q.scheduled_at <= :now)
+            ORDER BY q.scheduled_at ASC
+            LIMIT 10;
+        """)
+    else:
+        fetch_query = text("""
+            SELECT 
+                q.id as queue_id,
+                q.prospect_id,
+                q.email_draft,
+                q.subject,
+                q.body,
+                q.sender_oauth_token,
+                q.retry_count
+            FROM outreach_queue q
+            WHERE q.status = 'QUEUED_FOR_SEND'
+              AND (q.scheduled_at IS NULL OR q.scheduled_at <= :now)
+            ORDER BY q.scheduled_at ASC
+            LIMIT 10
+            FOR UPDATE OF q SKIP LOCKED;
+        """)
 
     try:
         now_utc = datetime.now(timezone.utc)
@@ -82,20 +101,27 @@ async def trigger_stateless_queue_worker(
 
         # 3. Update status to PROCESSING atomically
         job_ids = [j["queue_id"] for j in locked_jobs]
-        update_processing = text("""
-            UPDATE outreach_queue
-            SET status = 'PROCESSING'
-            WHERE id = ANY(:job_ids);
-        """)
-        await db.execute(update_processing, {"job_ids": job_ids})
-
         prospect_ids = [j["prospect_id"] for j in locked_jobs]
-        update_prospects = text("""
-            UPDATE prospects
-            SET status = 'PROCESSING'
-            WHERE id = ANY(:prospect_ids);
-        """)
-        await db.execute(update_prospects, {"prospect_ids": prospect_ids})
+
+        if is_sqlite:
+            for j_id in job_ids:
+                await db.execute(text("UPDATE outreach_queue SET status = 'PROCESSING' WHERE id = :id"), {"id": j_id})
+            for p_id in prospect_ids:
+                await db.execute(text("UPDATE prospects SET status = 'PROCESSING' WHERE id = :id"), {"id": p_id})
+        else:
+            update_processing = text("""
+                UPDATE outreach_queue
+                SET status = 'PROCESSING'
+                WHERE id = ANY(:job_ids);
+            """)
+            await db.execute(update_processing, {"job_ids": job_ids})
+
+            update_prospects = text("""
+                UPDATE prospects
+                SET status = 'PROCESSING'
+                WHERE id = ANY(:prospect_ids);
+            """)
+            await db.execute(update_prospects, {"prospect_ids": prospect_ids})
 
         await db.commit()
         logger.info(f"Locked {len(locked_jobs)} pending outreach jobs for processing.")
