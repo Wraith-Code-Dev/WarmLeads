@@ -29,8 +29,13 @@ export const api = {
 
   // Prospects
   getProspects: async (): Promise<Prospect[]> => {
-    const res = await axios.get(`${API_BASE}/prospects`);
-    return res.data;
+    try {
+      const res = await axios.get(`${API_BASE}/prospects`);
+      return res.data;
+    } catch (err) {
+      console.warn("Could not fetch prospects (backend offline):", err);
+      return [];
+    }
   },
 
   createProspect: async (data: Partial<Prospect>): Promise<Prospect> => {
@@ -49,8 +54,13 @@ export const api = {
 
   // Review Queue
   getReviewQueue: async (): Promise<ReviewQueueItem[]> => {
-    const res = await axios.get(`${API_BASE}/review/queue`);
-    return res.data;
+    try {
+      const res = await axios.get(`${API_BASE}/review/queue`);
+      return res.data;
+    } catch (err) {
+      console.warn("Could not fetch review queue (backend offline):", err);
+      return [];
+    }
   },
 
   updateReviewItem: async (prospectId: string, subject: string, body: string): Promise<ReviewQueueItem> => {
@@ -73,18 +83,26 @@ export const api = {
 
   // Analytics
   getAnalyticsOverview: async (): Promise<AnalyticsOverview> => {
-    const res = await axios.get(`${API_BASE}/analytics/overview`);
+    const res = await axios.get(`${API_BASE}/analytics/overview`, { timeout: 3000 });
     return res.data;
   },
 
   getRecentActivity: async (): Promise<RecentActivityItem[]> => {
-    const res = await axios.get(`${API_BASE}/analytics/activity`);
+    const res = await axios.get(`${API_BASE}/analytics/activity`, { timeout: 3000 });
     return res.data;
   },
 
   // Auth
   getGmailStatus: async () => {
-    const res = await axios.get(`${API_BASE}/auth/gmail/status`);
-    return res.data;
+    try {
+      const res = await axios.get(`${API_BASE}/auth/gmail/status`);
+      return res.data;
+    } catch (err) {
+      return {
+        connected: false,
+        email: null,
+        message: "Backend offline. Simulation engine enabled."
+      };
+    }
   }
 };
