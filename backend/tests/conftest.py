@@ -30,6 +30,13 @@ TestingSessionLocal = async_sessionmaker(
     autoflush=False
 )
 
+# Ensure all background tasks and modules use the test database session and engine
+import app.db.session as db_session_module
+db_session_module.AsyncPooledSessionLocal = TestingSessionLocal
+db_session_module.AsyncDirectSessionLocal = TestingSessionLocal
+db_session_module.pooled_engine = test_engine
+db_session_module.direct_engine = test_engine
+
 async def override_get_db() -> AsyncGenerator[AsyncSession, None]:
     async with TestingSessionLocal() as session:
         try:

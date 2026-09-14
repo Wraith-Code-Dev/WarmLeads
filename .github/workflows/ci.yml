@@ -36,14 +36,14 @@ jobs:
 
       - name: Run Pytest Integration Suite (21 Tests)
         env:
-          DATABASE_URL: "sqlite+aiosqlite:///:memory:"
-          POOLED_DB_URL: "sqlite+aiosqlite:///:memory:"
-          DIRECT_DB_URL: "sqlite+aiosqlite:///:memory:"
+          DATABASE_URL: "sqlite+aiosqlite:///./test_ci.db"
+          POOLED_DB_URL: "sqlite+aiosqlite:///./test_ci.db"
+          DIRECT_DB_URL: "sqlite+aiosqlite:///./test_ci.db"
           CRON_SECRET: "test_cron_secret_warmleads"
         run: pytest -v
 
   frontend-ci:
-    name: Frontend (Node 20 / TypeScript / Next.js)
+    name: Frontend (Node 22 / TypeScript / Next.js)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -56,7 +56,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
