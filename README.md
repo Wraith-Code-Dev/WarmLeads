@@ -107,9 +107,11 @@ warmleads/
    pip install -r requirements.txt
    ```
 
-4. Create a `.env` file in `backend/`:
-   ```ini
-   # Database Configuration (Neon DB Dual-Engine Setup)
+4. Create a `.env` file in `backend/` (copy from template):
+   ```bash
+   cp .env.example .env
+   ```
+   Configure your credentials:
    POOLED_DB_URL=postgresql+asyncpg://user:password@ep-xyz-pooler.region.neon.tech/warmleads?ssl=require
    DIRECT_DB_URL=postgresql+asyncpg://user:password@ep-xyz.region.neon.tech/warmleads?ssl=require
    DATABASE_URL=postgresql+asyncpg://user:password@ep-xyz-pooler.region.neon.tech/warmleads?ssl=require
@@ -157,9 +159,11 @@ warmleads/
    npm install
    ```
 
-3. Create `.env.local` in `frontend/`:
-   ```ini
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+3. Create `.env.local` in `frontend/` (copy from template):
+   ```bash
+   cp .env.example .env.local
+   ```
+   Configure your Supabase and API endpoints:
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
    NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
    ```
@@ -189,11 +193,10 @@ Test coverage includes:
 - `test_scrapers.py`: Deterministic SHA-256 hash generation, payload normalization, driver registration.
 - `test_ai_agent.py`: Two-pass AI research and copy generation fallbacks.
 
-### Frontend Quality Checks
 Run TypeScript strict type checking:
 ```bash
 cd frontend
-npx tsc --noEmit
+npm run type-check
 ```
 
 Run ESLint static analysis:
@@ -201,6 +204,11 @@ Run ESLint static analysis:
 cd frontend
 npm run lint
 ```
+
+### Continuous Integration (GitHub Actions)
+WarmLeads includes a robust, automated CI/CD pipeline defined in `.github/workflows/ci.yml` that runs on every push and pull request to `main`:
+- **Backend Job**: Installs dependencies on Python 3.12 and executes all **21 integration tests** via `pytest`.
+- **Frontend Job**: Sets up Node.js 20, runs `npm run type-check` (TypeScript validation), `npm run lint` (ESLint), and compiles an optimized production Next.js build (`npm run build`).
 
 ---
 
