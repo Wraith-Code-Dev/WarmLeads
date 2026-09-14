@@ -36,10 +36,10 @@ jobs:
 
       - name: Run Pytest Integration Suite (21 Tests)
         env:
-          DATABASE_URL: sqlite+aiosqlite:///:memory:
-          POOLED_DB_URL: sqlite+aiosqlite:///:memory:
-          DIRECT_DB_URL: sqlite+aiosqlite:///:memory:
-          CRON_SECRET: test_cron_secret_warmleads
+          DATABASE_URL: "sqlite+aiosqlite:///:memory:"
+          POOLED_DB_URL: "sqlite+aiosqlite:///:memory:"
+          DIRECT_DB_URL: "sqlite+aiosqlite:///:memory:"
+          CRON_SECRET: "test_cron_secret_warmleads"
         run: pytest -v
 
   frontend-ci:
@@ -71,7 +71,7 @@ jobs:
 
       - name: Production Build Test
         env:
-          NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy_anon_key_for_ci
-          NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+          NEXT_PUBLIC_SUPABASE_URL: "https://dummy.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "dummy_anon_key_for_ci"
+          NEXT_PUBLIC_API_URL: "http://localhost:8000/api/v1"
         run: npm run build
